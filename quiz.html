@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="cssquiz/style.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="author" content="kelompok sismul" >
+  <title>Ayo Kita Quiz</title>
+  <link href="https://fonts.googleapis.com/css?family=Julius+Sans+One|Google Sans" rel="stylesheet">
+</head>
+<body>
+
+  <section class="sec1" >
+    <div>
+      <img src="img/ayokuis.png" alt="Image" height="400" width="590">
+    </div>
+    <div>
+      <h3>Ayo kita Quiz</h3>
+      <p>Sebelum memulai latihan, jangan lupa baca bismillah ya </p>
+      <button class="btn btn1 continue-btn" >Continue</button>
+    </div>
+  </section>
+  
+  <section class="sec2" >
+    <div>
+      <img src="img/ayookuis.PNG" alt="Image" height="300" width="400">
+    </div>
+    <p>Simak Pertanyaannya, Semangat !!</p>
+    <div>
+      <input type="text" class="input" placeholder="Enter Your Name" >
+    </div>
+    <button class="btn btn1 start-quiz" >Start Quiz</button>
+  </section>
+
+  <section class="sec3" >
+    <div class="box" >
+      <div class="box__header" >
+        <div class="index" >1/10</div>
+        <div class="toast" ></div>
+        <div class="time" >00:01</div>
+      </div>
+      <h3 class="question" ></h3>
+      <ul class="quiz" >
+      </ul>
+      <button class="submit">Continue</button>
+    </div>
+  </section>
+  
+  <section class="sec4">
+    <div class="des" >
+
+      <p class="mb-1" >Congratulation </p>
+
+    </div>
+    <button class="check-ans btn" >Check Jawabanmu disini</button>
+    <h3><center> Your Certificate</h3></center>
+    <div class="certificate" >
+      <h4>Tajwid Quiz</h4>
+      <p id="name">Sistem multimedia</p>
+      <p id="score">Score: 50%</p>
+      <small id="id">Test Id : 737373</small>
+      <small id="date">7-5-2020</small>
+      <small class="sin" >sismul</small>
+    </div>
+    <h1 class="great" >Excellent</h1>
+    
+  </section>
+  <section class="sec5" >
+    <div class="flex" >
+      <h2>Jawaban Kamu</h2>
+      <h2 class="sc" ></h2>
+    </div>
+    <p class="mb-1" >If your answer is wrong then we cannot show the correct answer. This is Our private policy</p>
+    <ul class="ans-list" >
+    </ul>
+    <button class="btn back-btn" >Back</button>
+  </section>
+  <!-- script -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+  <script>
+//Do not see the answer
+const ques=[{que:"huruf idhgham ada berapa",option:["dua","satu","tiga","empat"],crt:0}, {que:"Yang merupakan hukum nun mati dan tanwin adalah ....",option:["Izhar halqi, ikhfa syafawi, idgham","Izhar halqi, Izhar syafawi, dan  iqlab","Izhar syafawi, idgham bighunnah, dan ikhfa’ haqiqi","Idgham bilaghunnah, iqlab, dan ikhfa"],crt:3}, {que:"Contoh ayat yang mengandung bacaan iqlab adalah",
+option:["خَيْرٌ حَلِيْمٌ, ", "اِنْ كَانَ  ", "كُنْتُمْ  ", "سَمِيْعٌ بَصِيْرٌ  "],crt:3}, {que:"Idgham mimi adalah pertemuan mim mati dengan huruf . . . .", option:["ب  ", " م  ", "ف  ", "ض   "], crt:1}, {que: "تَرْمِيْهِمْ بِحِجَارَةٍ  Ayat di samping adalah contoh bacaan yang mengandung hukum bacaan . . . ", option:["Idgham bilaa gunnah", "Izhar syafawi", "Idgham mimi", "Ikhfa syafawi"], crt:3}, {que: "Cara membaca huruf izhar adalah . . ", option:["Semar-semar", "Dengung", "Jelas", "Mantul"], crt:2}, {que:"Huruf Qalqalah ada ...", option:["tujuh","lima", "enam", "empat"],crt:1}, {que: "Huruf yang disifati ghunnah adalah ....", option:["Qaf dan Kaf", "Kaf dan Lam", "Mim dan nun", "Lam dan Mim"],crt:2}, {que:"Ada berapa huruf mad?", option:["tiga", "dua", "enam", "empat"], crt:0}, {que: "Apabila ada huruf Mad bertemu dengan hamzah, tetapi tidak kumpul dalam satu kalimah, maka hukum bacaannya disebut ?", option:["mad jaiz munfasil", "mad asli", "mad iwad", "mad wajib muttasil"],crt:0}];
+
+
+let score = 0, index = 0, name = "",answer = [], times;
+
+$(document).ready(function(){
+ $(".continue-btn").click(function(){
+   $(".sec1").fadeOut();
+   $(".sec2").fadeIn();
+ });
+ $(".start-quiz").click(function(){
+   name = $(".input").val();
+   if(name === '') {
+    alert("Please Enter Your Name")
+    return;
+  }
+  $(".sec2").fadeOut();
+  $(".sec3").fadeIn();
+  newQuestion()
+  startTimes()
+});
+ $(".quiz").on("click","li", function(){
+   $(".quiz .select").removeClass("select");
+   $(this).addClass("select");
+ })
+ $(".submit").click(function(){
+  const select = $(".quiz li").hasClass("select");
+  if(!select) {
+   alert("please select any option");
+   return;
+ }
+ const key = $(".quiz .select").attr("data-key");
+ checkAns(key)
+})
+ $(".check-ans").click(function(){
+   $(".sec4").fadeOut();
+   $(".sec5").fadeIn();
+   showYourAns()
+ });
+ $(".back-btn").click(function(){
+   $(".sec5").fadeOut();
+   $(".sec4").fadeIn();
+ });
+
+});
+
+let s = 0, m = "0"+0;
+function showTime(){
+  s++
+  if(s >= 60) {
+   s = 0;
+   m++
+   m = m < 10 ? "0" + m : m;
+ }
+ s = s < 10 ? "0" + s : s;
+ $(".time").text(m+":"+s);
+}
+function startTimes(){
+ times = setInterval(showTime,1000)
+}
+function newQuestion(){
+ const que = ques[index];
+ showIndex()
+ $(".question").text(que.que);
+ $(".quiz").html("");
+ que.option.forEach((q,i) => {
+  const li = document.createElement('li');
+  li.setAttribute('data-key',i);
+  li.textContent = q;
+  $(".quiz").append(li)
+})
+}
+
+function checkAns(key) {
+  const que = ques[index];
+  answer.push(key);
+  if(que.crt == key) {
+   score++;
+   makeToast("Jawabanmu benar")
+ } else{
+   makeToast("Jawabanmu salah")
+ }
+ index++;
+ if(index < ques.length) {
+   newQuestion()
+ } else{
+   showResult()
+   clearInterval(times)
+ }
+}
+
+function showIndex(){
+  $(".index").text(1 + index+"/"+ques.length)
+}
+
+function showResult(){
+  $(".sec3").fadeOut();
+  $(".sec4").fadeIn();
+  $("#name").text(name);
+  $(".name").text(name);
+  const scores = Math.round(score / ques.length * 100);
+  const grt = scores < 25 ? "Nice" : scores < 50 ? "Good" : scores < 76 ? "Very Good" : "Excellent";
+  $("#score").text("Score : "+ scores +"%");
+  $("#id").text("Test Id : "+ Math.ceil(Math.random() * 20000));
+  let date = new Date();
+  let today = String(date.getDate()).padStart(2, '0') + '/' + String(date.getMonth() + 1).padStart(2, '0') + '/' + date.getFullYear();
+  $("#date").text(today);
+  $(".great").text(grt);
+}
+
+
+function showYourAns() {
+  $(".ans-list").html("");
+  $(".sc").text(score+ "/"+ques.length)
+  ques.forEach((que,i) => {
+   const li = document.createElement('li');
+   const p = document.createElement('p');
+   const span = document.createElement('span');
+   p.textContent = 1+i +" : "+ que.que;
+   const chrt = que.crt == answer[i] ? '👉' : '❌';
+   span.textContent = chrt +" "+ que.option[answer[i]];
+   const cls = que.crt == answer[i] ? 'green' : 'red';
+   span.classList.add(cls);
+   li.appendChild(p)
+   li.appendChild(span)
+   $(".ans-list").append(li);
+ })
+}
+
+function makeToast(txt) {
+  $(".toast").text(txt);
+  $(".toast").fadeIn();
+  setTimeout(() => $(".toast").fadeOut(),1000)
+}
+
+</script>
+</body>
+</html>
